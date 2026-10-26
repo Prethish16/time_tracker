@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         PYTHON = 'C:/Users/PRETHISH/AppData/Local/Programs/Python/Python314/python.exe'
-        DOCKER = 'C:/Program Files/Docker/Docker/resources/bin/docker.exe'
+        DOCKER = 'C:/Users/PRETHISH/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe'
         DOCKERHUB_REPOSITORY = 'prethish1601/time-tracker'
     }
 
