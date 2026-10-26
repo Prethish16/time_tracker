@@ -4,13 +4,17 @@ pipeline {
 
     environment {
         PYTHON = 'C:/Users/PRETHISH/AppData/Local/Programs/Python/Python314/python.exe'
+        DOCKER = 'C:/Program Files/Docker/Docker/resources/bin/docker.exe'
+        DOCKERHUB_REPOSITORY = 'prethish1601/time-tracker'
     }
 
     stages {
-        stage('Verify Python and Git') {
+        stage('Verify Tools') {
             steps {
                 bat '"%PYTHON%" --version'
                 bat 'git --version'
+                bat '"%DOCKER%" --version'
+                bat '"%DOCKER%" info'
             }
         }
 
@@ -28,19 +32,44 @@ pipeline {
                 bat '.venv-ci\\Scripts\\python.exe -m pytest -v'
             }
         }
+
+        stage('Build Docker Image') {
+            steps {
+                bat '"%DOCKER%" build -t time-tracker:v1 .'
+                bat '"%DOCKER%" tag time-tracker:v1 %DOCKERHUB_REPOSITORY%:v1'
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKERHUB_USERNAME',
+                        passwordVariable: 'DOCKERHUB_PASSWORD'
+                    )
+                ]) {
+                    bat 'powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$env:DOCKERHUB_PASSWORD | & $env:DOCKER login --username $env:DOCKERHUB_USERNAME --password-stdin"'
+
+                    bat '"%DOCKER%" push %DOCKERHUB_REPOSITORY%:v1'
+
+                    bat '"%DOCKER%" logout'
+                }
+            }
+        }
     }
 
     post {
         success {
-            echo 'SUCCESS: All Version 1 tests passed.'
+            echo 'SUCCESS: Tests passed, Docker image built, and v1 pushed to Docker Hub.'
         }
 
         failure {
-            echo 'FAILURE: Check the Console Output for the error.'
+            echo 'FAILURE: Check Console Output to identify the failed stage.'
         }
 
         always {
-            echo 'Version 1 CI pipeline execution completed.'
+            echo 'Version 1 CI/CD pipeline execution completed.'
         }
     }
 }
