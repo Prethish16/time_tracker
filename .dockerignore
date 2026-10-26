@@ -1,0 +1,8 @@
+.venv/
+.venv-ci/
+__pycache__/
+.pytest_cache/
+.git/
+*.pyc
+time_tracker.db
+.env
