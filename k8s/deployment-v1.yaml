@@ -1,0 +1,21 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-tracker-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time-tracker-v1
+  template:
+    metadata:
+      labels:
+        app: time-tracker-v1
+    spec:
+      containers:
+        - name: time-tracker
+          image: prethish1601/time-tracker:v1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
