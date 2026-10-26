@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Tracker - Version 1</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+    <main class="container">
+        <h1>Time Tracker</h1>
+
+        {% if active_session %}
+            <p class="status running">Timer is running</p>
+            <div id="timer-display"
+            data-started-at="{{ active_session.start_time }}"
+            data-elapsed="{{ elapsed_seconds }}">
+            00:00:00
+            </div>
+
+            <form action="{{ url_for('stop_timer') }}" method="post">
+                <button class="stop-button" type="submit">Stop Timer</button>
+            </form>
+        {% else %}
+            <p class="status">Timer is not running</p>
+            <div id="timer-display"
+            data-elapsed="{{ elapsed_seconds }}">
+            00:00:00
+            </div>
+
+            <form action="{{ url_for('start_timer') }}" method="post">
+                <button class="start-button" type="submit">Start Timer</button>
+            </form>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+    </main>
+</body>
+</html>
