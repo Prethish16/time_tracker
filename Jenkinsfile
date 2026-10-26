@@ -1,9 +1,6 @@
+
 pipeline {
     agent any
-
-    options {
-        timestamps()
-    }
 
     stages {
         stage('Verify Python') {
