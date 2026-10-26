@@ -2,10 +2,14 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'C:/Users/PRETHISH/AppData/Local/Programs/Python/Python314/python.exe'
+    }
+
     stages {
-        stage('Verify Python') {
+        stage('Verify Python and Git') {
             steps {
-                bat 'py --version'
+                bat '"%PYTHON%" --version'
                 bat 'git --version'
             }
         }
@@ -13,7 +17,7 @@ pipeline {
         stage('Create CI Environment') {
             steps {
                 bat 'if exist .venv-ci rmdir /s /q .venv-ci'
-                bat 'py -m venv .venv-ci'
+                bat '"%PYTHON%" -m venv .venv-ci'
                 bat '.venv-ci\\Scripts\\python.exe -m pip install --upgrade pip'
                 bat '.venv-ci\\Scripts\\python.exe -m pip install -r requirements.txt'
             }
@@ -28,11 +32,11 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: Version 1 tests passed.'
+            echo 'SUCCESS: All Version 1 tests passed.'
         }
 
         failure {
-            echo 'FAILURE: Check the Jenkins Console Output.'
+            echo 'FAILURE: Check the Console Output for the error.'
         }
 
         always {
