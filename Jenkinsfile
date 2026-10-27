@@ -27,7 +27,8 @@ pipeline {
                     def sourceBranch =
                         params.VERSION == 'v1' ? 'main' : params.VERSION
 
-                    echo "Building ${params.VERSION} from branch ${sourceBranch}"
+                    echo "Selected version: ${params.VERSION}"
+                    echo "Checking out branch: ${sourceBranch}"
 
                     deleteDir()
 
@@ -94,11 +95,11 @@ pipeline {
 
     post {
         success {
-            echo "SUCCESS: ${params.VERSION} tests passed and Docker image was pushed."
+            echo "SUCCESS: ${params.VERSION} tests passed and Docker image was pushed to Docker Hub."
         }
 
         failure {
-            echo 'FAILURE: Check the failed stage in Console Output.'
+            echo 'FAILURE: Check Console Output to identify the failed stage.'
         }
 
         always {
