@@ -37,6 +37,39 @@ def get_active_session():
         return dict(row) if row else None
 
 
+def get_completed_sessions():
+    with closing(sqlite3.connect(DB_PATH)) as connection:
+        connection.row_factory = sqlite3.Row
+        rows = connection.execute("""
+            SELECT id, start_time, end_time, duration_seconds
+            FROM sessions
+            WHERE end_time IS NOT NULL
+            ORDER BY id DESC
+            LIMIT 50
+        """).fetchall()
+
+    sessions = []
+
+    for row in rows:
+        start = datetime.fromisoformat(row["start_time"])
+        end = datetime.fromisoformat(row["end_time"])
+        duration = row["duration_seconds"] or 0
+
+        sessions.append({
+            "id": row["id"],
+            "date": start.strftime("%d %b %Y"),
+            "start": start.strftime("%I:%M:%S %p"),
+            "end": end.strftime("%I:%M:%S %p"),
+            "duration": (
+                f"{duration // 3600:02d}:"
+                f"{(duration % 3600) // 60:02d}:"
+                f"{duration % 60:02d}"
+            )
+        })
+
+    return sessions
+
+
 @app.route("/")
 def index():
     active_session = get_active_session()
@@ -51,17 +84,19 @@ def index():
             0, int((now - start).total_seconds())
         )
     else:
-        # Show the final duration only immediately after Stop.
         elapsed_seconds = request.args.get(
             "stopped_duration", default=0, type=int
         )
 
+    # Version 2: retrieve completed session logs
+    sessions = get_completed_sessions()
+
     return render_template(
         "index.html",
         active_session=active_session,
-        elapsed_seconds=elapsed_seconds
+        elapsed_seconds=elapsed_seconds,
+        sessions=sessions
     )
-
 
 
 @app.post("/start")

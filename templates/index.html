@@ -4,42 +4,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Tracker - Version 1</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Time Tracker - Version 2</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
 <body>
     <main class="container">
         <h1>Time Tracker</h1>
+        <p>Version 2: Start/Stop Timer and View Logs</p>
 
-        {% if active_session %}
-            <p class="status running">Timer is running</p>
-            <div id="timer-display"
-            data-started-at="{{ active_session.start_time }}"
-            data-elapsed="{{ elapsed_seconds }}">
-            00:00:00
-            </div>
+        <div class="dashboard-grid">
 
-            <form action="{{ url_for('stop_timer') }}" method="post">
-                <button class="stop-button" type="submit">Stop Timer</button>
-            </form>
-        {% else %}
-            <p class="status">Timer is not running</p>
-            <div id="timer-display"
-            data-elapsed="{{ elapsed_seconds }}">
-            00:00:00
-            </div>
+            <section class="timer-card">
+                {% if active_session %}
+                    <p class="status running">Timer is running</p>
 
-            <form action="{{ url_for('start_timer') }}" method="post">
-                <button class="start-button" type="submit">Start Timer</button>
-            </form>
-        {% endif %}
+                    <div id="timer-display"
+                         data-started-at="{{ active_session.start_time }}"
+                         data-elapsed="{{ elapsed_seconds }}">
+                        00:00:00
+                    </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, message in messages %}
-                <p class="{{ category }}">{{ message }}</p>
-            {% endfor %}
-        {% endwith %}
+                    <form action="{{ url_for('stop_timer') }}" method="post">
+                        <button class="stop-button" type="submit">
+                            Stop Timer
+                        </button>
+                    </form>
+                {% else %}
+                    <p class="status">Timer is not running</p>
+
+                    <div id="timer-display"
+                         data-elapsed="{{ elapsed_seconds }}">
+                        00:00:00
+                    </div>
+
+                    <form action="{{ url_for('start_timer') }}" method="post">
+                        <button class="start-button" type="submit">
+                            Start Timer
+                        </button>
+                    </form>
+                {% endif %}
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <p class="{{ category }}">{{ message }}</p>
+                    {% endfor %}
+                {% endwith %}
+            </section>
+
+            <section class="logs-card">
+                <h2>Time Tracking Logs</h2>
+                <p>Completed sessions, newest first.</p>
+
+                {% if sessions %}
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in sessions %}
+                                    <tr>
+                                        <td>{{ session.date }}</td>
+                                        <td>{{ session.start }}</td>
+                                        <td>{{ session.end }}</td>
+                                        <td>{{ session.duration }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="empty-message">
+                        No completed sessions yet. Start and stop the timer
+                        to create your first log.
+                    </p>
+                {% endif %}
+            </section>
+
+        </div>
+
+        <footer>24MIS0315 | Time Tracker</footer>
     </main>
 </body>
 </html>

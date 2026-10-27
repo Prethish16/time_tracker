@@ -9,24 +9,53 @@ body {
     font-family: Arial, sans-serif;
     background: #f1f5f9;
     color: #1e293b;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .container {
     background: white;
-    width: 90%;
-    max-width: 500px;
-    padding: 35px;
+    width: 96%;
+    max-width: 1400px;
+    margin: 30px auto;
+    padding: 28px;
     border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
 }
 
 h1 {
     margin-bottom: 8px;
     color: #2563eb;
+    text-align: center;
+}
+
+.container > p {
+    text-align: center;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.5fr);
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+}
+
+.timer-card,
+.logs-card {
+    min-width: 0;
+    padding: 25px;
+    background: #fff;
+    border: 1px solid #edf0f5;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.timer-card {
+    text-align: center;
+}
+
+.logs-card {
+    text-align: left;
+    overflow: hidden;
 }
 
 .status {
@@ -40,7 +69,7 @@ h1 {
 }
 
 #timer-display {
-    font-size: 48px;
+    font-size: clamp(32px, 4vw, 48px);
     font-weight: bold;
     margin: 30px 0;
     font-variant-numeric: tabular-nums;
@@ -73,4 +102,63 @@ button:hover {
 
 .error {
     color: #dc2626;
+}
+
+.logs-card h2 {
+    margin-top: 0;
+    color: #2563eb;
+}
+
+.logs-card > p {
+    color: #64748b;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+th,
+td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+th {
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.empty-message {
+    padding: 18px 0;
+    color: #64748b;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    padding: 12px;
+    margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+    .container {
+        width: 96%;
+        padding: 16px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+    }
 }

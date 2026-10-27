@@ -71,3 +71,27 @@ def test_stop_without_active_timer(client):
 
     assert b"No active timer to stop." in response.data
     assert len(get_sessions()) == 0
+
+def test_logs_section_is_displayed(client):
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert b"Time Tracking Logs" in response.data
+    assert b"No completed sessions yet." in response.data
+
+
+def test_completed_session_appears_in_logs(client):
+    client.post("/start")
+    client.post("/stop")
+
+    response = client.get("/")
+    sessions = tracker.get_completed_sessions()
+
+    assert response.status_code == 200
+    assert len(sessions) == 1
+    assert b"Time Tracking Logs" in response.data
+    assert b"Start Time" in response.data
+    assert b"End Time" in response.data
+    assert b"Duration" in response.data
+    assert sessions[0]["date"].encode() in response.data
+    assert sessions[0]["duration"].encode() in response.data
