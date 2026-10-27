@@ -69,6 +69,16 @@ def get_completed_sessions():
 
     return sessions
 
+def get_total_tracked_seconds():
+    with closing(sqlite3.connect(DB_PATH)) as connection:
+        row = connection.execute("""
+            SELECT COALESCE(SUM(duration_seconds), 0)
+            FROM sessions
+            WHERE end_time IS NOT NULL
+        """).fetchone()
+
+    return int(row[0] or 0)
+
 
 @app.route("/")
 def index():
@@ -88,15 +98,26 @@ def index():
             "stopped_duration", default=0, type=int
         )
 
-    # Version 2: retrieve completed session logs
     sessions = get_completed_sessions()
+
+    total_tracked_seconds = get_total_tracked_seconds()
+    total_hours = total_tracked_seconds / 3600
+
+    total_duration = (
+        f"{total_tracked_seconds // 3600:02d}:"
+        f"{(total_tracked_seconds % 3600) // 60:02d}:"
+        f"{total_tracked_seconds % 60:02d}"
+    )
 
     return render_template(
         "index.html",
         active_session=active_session,
         elapsed_seconds=elapsed_seconds,
-        sessions=sessions
+        sessions=sessions,
+        total_hours=total_hours,
+        total_duration=total_duration
     )
+
 
 
 @app.post("/start")

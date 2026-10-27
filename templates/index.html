@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Tracker - Version 2</title>
+    <title>Time Tracker - Version 3</title>
+
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
 <body>
     <main class="container">
         <h1>Time Tracker</h1>
-        <p>Version 2: Start/Stop Timer and View Logs</p>
+        <p>Version 3: Start/Stop, View Logs and Total Hours</p>
 
         <div class="dashboard-grid">
 
+            <!-- Timer panel -->
             <section class="timer-card">
                 {% if active_session %}
                     <p class="status running">Timer is running</p>
@@ -53,7 +56,15 @@
                 {% endwith %}
             </section>
 
+            <!-- Total hours and logs panel -->
             <section class="logs-card">
+
+                <div class="total-summary">
+                    <p class="summary-label">TOTAL TRACKED TIME</p>
+                    <h2>{{ total_duration }}</h2>
+                    <p>{{ "%.2f"|format(total_hours) }} hours tracked</p>
+                </div>
+
                 <h2>Time Tracking Logs</h2>
                 <p>Completed sessions, newest first.</p>
 
@@ -68,6 +79,7 @@
                                     <th>Duration</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {% for session in sessions %}
                                     <tr>
@@ -86,8 +98,8 @@
                         to create your first log.
                     </p>
                 {% endif %}
-            </section>
 
+            </section>
         </div>
 
         <footer>24MIS0315 | Time Tracker</footer>

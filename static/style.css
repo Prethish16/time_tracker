@@ -162,3 +162,31 @@ footer {
         gap: 18px;
     }
 }
+
+
+.total-summary {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 24px;
+}
+
+.total-summary .summary-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin: 0 0 8px;
+}
+
+.total-summary h2 {
+    color: #2563eb;
+    font-size: 30px;
+    margin: 0 0 8px;
+}
+
+.total-summary p:last-child {
+    color: #475569;
+    margin-bottom: 0;
+}

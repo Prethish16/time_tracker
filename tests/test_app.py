@@ -95,3 +95,28 @@ def test_completed_session_appears_in_logs(client):
     assert b"Duration" in response.data
     assert sessions[0]["date"].encode() in response.data
     assert sessions[0]["duration"].encode() in response.data
+
+def test_total_hours_displayed(client):
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert b"TOTAL TRACKED TIME" in response.data
+    assert b"hours tracked" in response.data
+
+
+def test_total_hours_adds_completed_sessions(client):
+    client.post("/start")
+    client.post("/stop")
+
+    client.post("/start")
+    client.post("/stop")
+
+    total_seconds = tracker.get_total_tracked_seconds()
+
+    assert total_seconds >= 0
+    assert len(tracker.get_completed_sessions()) == 2
+
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"Time Tracking Logs" in response.data
+    assert b"TOTAL TRACKED TIME" in response.data
