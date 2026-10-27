@@ -35,8 +35,8 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat '"%DOCKER%" build -t time-tracker:v1 .'
-                bat '"%DOCKER%" tag time-tracker:v1 %DOCKERHUB_REPOSITORY%:v1'
+                bat '"%DOCKER%" build -t time-tracker:v2 .'
+                bat '"%DOCKER%" tag time-tracker:v1 %DOCKERHUB_REPOSITORY%:v2'
             }
         }
 
@@ -51,7 +51,7 @@ pipeline {
                 ]) {
                     bat 'powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "$env:DOCKERHUB_PASSWORD | & $env:DOCKER login --username $env:DOCKERHUB_USERNAME --password-stdin"'
 
-                    bat '"%DOCKER%" push %DOCKERHUB_REPOSITORY%:v1'
+                    bat '"%DOCKER%" push %DOCKERHUB_REPOSITORY%:v2'
 
                     bat '"%DOCKER%" logout'
                 }
@@ -61,7 +61,7 @@ pipeline {
 
     post {
         success {
-            echo 'SUCCESS: Tests passed, Docker image built, and v1 pushed to Docker Hub.'
+            eecho 'SUCCESS: Tests passed, Docker image built, and v2 pushed to Docker Hub.'
         }
 
         failure {
